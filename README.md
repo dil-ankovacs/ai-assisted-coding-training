@@ -8,6 +8,7 @@ A React-based Todo application built with TypeScript, Material UI, and Atlas UI 
 
 - ✅ Create, read, update, and delete todo items
 - ✅ Mark todos as completed
+- ✅ Session persistence (survives page refreshes)
 - ✅ Responsive design with Material UI
 - ✅ TypeScript for type safety
 - ✅ React Context for state management
@@ -55,8 +56,26 @@ src/
 ├── contexts/                    # React contexts
 ├── providers/                   # React providers
 ├── types/                       # TypeScript type definitions
+├── utils/                       # Utility functions
 └── ...
 ```
+
+## Session Persistence
+
+Todo items are automatically saved to the browser's `sessionStorage` to persist across page refreshes within the same browser session.
+
+**Scope:**
+
+- ✅ Survives page refreshes during the same browser session
+- ✅ Automatically clears when the browser is closed
+- ✅ Graceful handling of corrupted data
+- ✅ Storage quota error handling with user feedback
+
+**Limitations:**
+
+- ❌ No encryption of stored data
+- ❌ No cross-device synchronization
+- ❌ Data is cleared when browser session ends
 
 ## AI Development Support
 

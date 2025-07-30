@@ -1,8 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TodoProvider } from '../contexts/TodoContext';
+import { ToastProvider } from '../components/Toast';
 import { useTodo } from '../hooks/useTodo';
-// import { act } from 'react-dom/test-utils';
+import { vi } from 'vitest';
+
+// Mock the sessionStorage utilities to avoid dependency on storage
+vi.mock('../utils/sessionStorage', () => ({
+  loadTodos: vi.fn(() => []),
+  saveTodos: vi.fn(() => ({ success: true })),
+  isValidTodos: vi.fn(() => true),
+}));
 
 const TestComponent = () => {
   const { todos, addTodo, toggleTodoCompletion, deleteTodo } = useTodo();
@@ -32,13 +40,15 @@ const TestComponent = () => {
   );
 };
 
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <ToastProvider>
+    <TodoProvider>{children}</TodoProvider>
+  </ToastProvider>
+);
+
 describe('TodoContext', () => {
   it('provides empty todos array initially', () => {
-    render(
-      <TodoProvider>
-        <TestComponent />
-      </TodoProvider>
-    );
+    render(<TestComponent />, { wrapper: Wrapper });
 
     expect(screen.getByTestId('todo-count').textContent).toBe('0');
   });
@@ -46,11 +56,7 @@ describe('TodoContext', () => {
   it('can add a new todo', async () => {
     const user = userEvent.setup();
 
-    render(
-      <TodoProvider>
-        <TestComponent />
-      </TodoProvider>
-    );
+    render(<TestComponent />, { wrapper: Wrapper });
 
     await user.click(screen.getByTestId('add-todo'));
 
@@ -62,11 +68,7 @@ describe('TodoContext', () => {
   it('can toggle todo completion status', async () => {
     const user = userEvent.setup();
 
-    render(
-      <TodoProvider>
-        <TestComponent />
-      </TodoProvider>
-    );
+    render(<TestComponent />, { wrapper: Wrapper });
 
     await user.click(screen.getByTestId('add-todo'));
 
@@ -89,11 +91,7 @@ describe('TodoContext', () => {
   it('can delete a todo', async () => {
     const user = userEvent.setup();
 
-    render(
-      <TodoProvider>
-        <TestComponent />
-      </TodoProvider>
-    );
+    render(<TestComponent />, { wrapper: Wrapper });
 
     await user.click(screen.getByTestId('add-todo'));
 
